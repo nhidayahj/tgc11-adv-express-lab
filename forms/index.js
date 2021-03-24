@@ -2,6 +2,7 @@
 const forms = require('forms');
 const fields = forms.fields;
 const validators = forms.validators;
+const widgets = require('forms').widgets;
 
 var bootstrapField = function (name, object) {
     if (!Array.isArray(object.widget.classes)) { object.widget.classes = []; }
@@ -30,36 +31,56 @@ const createPosterForm = () => {
             required: true,
             errorAfterField: true,
             cssClasses: {
-                label: ['form-label']
-            }
+                label: ['form-label', 'text-primary']
+            },
+            
         }),
         'description': fields.string({
             required: true,
             errorAfterField: true,
             cssClasses: {
-                label: ['form-label']
+                label: ['form-label','text-primary']
             }
         }),
-        'date': fields.date({
+        'date': fields.string({
             required: true,
             errorAfterField: true,
             cssClasses: {
-                label: ['form-label']
-            }
+                label: ['form-label','text-primary']
+            },
+            widget:widgets.date()
         }),
         'cost': fields.string({
             required: true,
             errorAfterField: true,
             cssClasses: {
-                label: ['form-label']
-            }
+                label: ['form-label','text-primary']
+                
+            },
+            validators:[validators.integer()]
         }),
         'stock': fields.string({
             required: true,
             errorAfterField: true,
             cssClasses: {
-                label: ['form-label']
+                label: ['form-label','text-primary']
             }
+        }),
+        'width': fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label','text-primary']
+            },
+            validators:[validators.integer()]
+        }),
+        'height': fields.string({
+            required: true,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label','text-primary']
+            },
+            validators:[validators.integer()]
         })
     })
 }
