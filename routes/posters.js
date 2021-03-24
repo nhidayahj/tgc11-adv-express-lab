@@ -31,6 +31,8 @@ router.post('/create', async (req,res) => {
             poster.set('date', form.data.date);
             poster.set('cost', form.data.cost);
             poster.set('stock', form.data.stock);
+            poster.set('width', form.data.width);
+            poster.set('height', form.data.height);
             await poster.save();
             req.flash('success_messages', `${form.data.title} has successfully been added!`)
             res.redirect('/posters/all-posters');

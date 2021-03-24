@@ -42,7 +42,7 @@ const createPosterForm = () => {
                 label: ['form-label','text-primary']
             }
         }),
-        'date': fields.string({
+        'date': fields.date({
             required: true,
             errorAfterField: true,
             cssClasses: {
