@@ -5,6 +5,9 @@ const Poster = bookshelf.model('Posters', {
     category() {
         // the argument is the name of the model, (not the table)
         return this.belongsTo('Category')
+    }, 
+    tags(){
+        return this.belongsToMany('Tag')
     }
 });
 
@@ -15,4 +18,12 @@ const Category = bookshelf.model('Category', {
     }
 })
 
-module.exports = {Poster, Category};
+const Tag = bookshelf.model('Tag', {
+    tableName:'tags',
+    posters(){
+        return this.belongsToMany('Poster')
+    }
+})
+
+
+module.exports = {Poster, Category, Tag};

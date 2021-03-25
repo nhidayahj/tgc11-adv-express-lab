@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 
-const { Poster, Category } = require('../models')
+const { Poster, Category, Tag } = require('../models')
 
 // import the poster form 
 const { createPosterForm, bootstrapField } = require('../forms')
@@ -30,7 +30,10 @@ router.get('/create', async (req, res) => {
 })
 
 router.post('/create', async (req, res) => {
-    const posterForm = createPosterForm();
+    const allCategories = await Category.fetchAll().map((category) => {
+        return [category.get('id'), category.get('name')]
+    })
+    const posterForm = createPosterForm(allCategories);
     posterForm.handle(req, {
         'success': async (form) => {
             const poster = new Poster();
@@ -42,6 +45,7 @@ router.post('/create', async (req, res) => {
             poster.set('stock', form.data.stock);
             poster.set('width', form.data.width);
             poster.set('height', form.data.height);
+            poster.set('category_id', form.data.category_id);
 
 
             await poster.save();
@@ -49,6 +53,7 @@ router.post('/create', async (req, res) => {
             res.redirect('/posters/all-posters');
         },
         'error': (form) => {
+
             req.flash('error_messages', "There is an error to your subbmission. Please try again")
             res.render('./posters/create', {
                 'form': form.toHTML(bootstrapField)
