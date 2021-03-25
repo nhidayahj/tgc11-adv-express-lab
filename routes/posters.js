@@ -64,6 +64,10 @@ router.get('/:poster_id/update', async(req,res) => {
     posterForm.fields.width.value = poster.get('width')
     posterForm.fields.height.value = poster.get('height')
 
+    res.render('posters/update', {
+        'form':posterForm.toHTML(bootstrapField),
+        'poster':poster.toJSON()
+    })
 })
 
 module.exports = router;
