@@ -4,9 +4,11 @@
 <div>
     <h2>Delete Poster: {{poster.title}}</h2>
     <form method="POST">
-        {{{form}}}
-        <input type="submit" value="Delete Poster" class="btn btn-danger" />
-        <a href="/posters/all-posters" class="btn outline btn-danger">Cancel</a>
+        <div class="alert alert-danger">
+            <p>Are you sure you want to delete {{poster.title}}</p>
+        </div> 
+        <input type="submit" class="btn btn-danger btn-sm" value="Yes"/>
+        <a href="/posters/all-posters" class="btn btn-success btn-sm">No</a>
     </form>
 </div>
 
