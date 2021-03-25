@@ -70,4 +70,48 @@ router.get('/:poster_id/update', async(req,res) => {
     })
 })
 
+
+router.post('/:poster_id/update', async(req,res) => {
+    // fetch the product we want to update 
+    const poster = await Poster.where({
+        'id':req.params.poster_id
+    }).fetch({
+        'required':true
+    })
+
+    // process the form
+    const posterForm = createPosterForm()
+    posterForm.handle(req, {
+        'success':async(form) => {
+            poster.set(form.data);
+            poster.save();
+            req.flash('success_messages', `${form.data.title} is updated`)
+            res.redirect('/posters/all-posters')
+        }, 
+        'error': async(form) => {
+            req.flash("error_messages", "There is an error to your updated field. Please check again.")
+            res.render('posters/update', {
+                'form':form.toHTML(bootstrapField)
+            })
+        }
+    })
+})
+
+
+router.get('/:poster_id/delete', async(req,res) => {
+    // fetch the product we want to delete
+    let posterId = req.params.poster_id
+    const poster = await Poster.where({
+        'id':posterId
+    }).fetch({
+        'required':true
+    })
+
+    res.send('posters/delete')
+    // process the delete formm
+    // res.render('products/delete', {
+    //     'poster':poster
+    // })
+
+})
 module.exports = router;
