@@ -11,11 +11,14 @@ router.get('/all-posters', async (req, res) => {
     // name of the r/s is the function name that returns a r/s of model
     // look the model file
     let posters = await Poster.collection().fetch({
-        'withRelated': ['category']
+        'withRelated': ['category', 'tags']
     });
+    
     res.render('posters/posters', {
-        'posters': posters.toJSON()
+        'posters': posters.toJSON(),
+
     })
+    // console.log(posters.toJSON())
 })
 
 
@@ -23,7 +26,12 @@ router.get('/create', async (req, res) => {
     const allCategories = await Category.fetchAll().map((category) => {
         return [category.get('id'), category.get('name')]
     })
-    const posterForm = createPosterForm(allCategories);
+
+    const allTags = await Tag.fetchAll().map((tag)=>{
+        return [tag.get('id'), tag.get('name')]
+    })
+
+    const posterForm = createPosterForm(allCategories, allTags);
     res.render('posters/create', {
         'form': posterForm.toHTML(bootstrapField)
     })
@@ -33,19 +41,30 @@ router.post('/create', async (req, res) => {
     const allCategories = await Category.fetchAll().map((category) => {
         return [category.get('id'), category.get('name')]
     })
-    const posterForm = createPosterForm(allCategories);
+    const allTags = await Tag.fetchAll().map((tag)=>{
+        return [tag.get('id'), tag.get('name')]
+    })
+    const posterForm = createPosterForm(allCategories, allTags);
     posterForm.handle(req, {
         'success': async (form) => {
+            let {tags, ...posterData} = form.data
+            // below set the form fields from the desrtuctured object above
             const poster = new Poster();
-            // below commenteds are the manual setting
-            poster.set('title', form.data.title);
-            poster.set('description', form.data.description);
-            poster.set('date', form.data.date);
-            poster.set('cost', form.data.cost);
-            poster.set('stock', form.data.stock);
-            poster.set('width', form.data.width);
-            poster.set('height', form.data.height);
-            poster.set('category_id', form.data.category_id);
+            poster.set(posterData)
+            // below is if tags are selected
+            if (tags) {
+                await poster.tags().attach(tags.split(','))
+            }
+             // below commenteds are the manual setting
+            // poster.set('title', form.data.title);
+            // poster.set('description', form.data.description);
+            // poster.set('date', form.data.date);
+            // poster.set('cost', form.data.cost);
+            // poster.set('stock', form.data.stock);
+            // poster.set('width', form.data.width);
+            // poster.set('height', form.data.height);
+            // poster.set('category_id', form.data.category_id);
+            // poster.set('tags', form.data.tags);
 
 
             await poster.save();
@@ -65,48 +84,74 @@ router.post('/create', async (req, res) => {
 
 router.get('/:poster_id/update', async (req, res) => {
     let posterId = req.params.poster_id
-    const poster = await Poster.where({
-        'id': posterId
-    }).fetch({
-        required: true
-    })
-
     // fetch all the categories 
     const allCategories = await Category.fetchAll().map((category) => {
         return [category.get('id'), category.get('name')]
     })
 
-    const posterForm = createPosterForm(allCategories);
-    posterForm.fields.title.value = poster.get('title')
-    posterForm.fields.description.value = poster.get('description')
-    posterForm.fields.cost.value = poster.get('cost')
-    posterForm.fields.date.value = poster.get('date')
-    posterForm.fields.stock.value = poster.get('stock')
-    posterForm.fields.width.value = poster.get('width')
-    posterForm.fields.height.value = poster.get('height')
-    posterForm.fields.category_id.value = poster.get('category_id')
+     //fetch all tags
+    const allTags = await Tag.fetchAll().map((tag)=>{
+        return [tag.get('id'), tag.get('name')]
+    })
+
+    const posterToEdit = await Poster.where({
+        'id': posterId
+    }).fetch({
+        'required': true,
+        'withRelated':['tags']
+    })
+
+    const posterJSON = posterToEdit.toJSON()
+    // get the selected tags 
+    const selectedTags = posterJSON.tags.map((tag)=> tag.id)
+
+    const posterForm = createPosterForm(allCategories, allTags);
+    posterForm.fields.title.value = posterToEdit.get('title')
+    posterForm.fields.description.value = posterToEdit.get('description')
+    posterForm.fields.cost.value = posterToEdit.get('cost')
+    posterForm.fields.date.value = posterToEdit.get('date')
+    posterForm.fields.stock.value = posterToEdit.get('stock')
+    posterForm.fields.width.value = posterToEdit.get('width')
+    posterForm.fields.height.value = posterToEdit.get('height')
+    posterForm.fields.category_id.value = posterToEdit.get('category_id')
+    posterForm.fields.tags.value = selectedTags
 
     res.render('posters/update', {
         'form': posterForm.toHTML(bootstrapField),
-        'poster': poster.toJSON()
+        'poster': posterJSON
     })
 })
 
 
 router.post('/:poster_id/update', async (req, res) => {
     // fetch the product we want to update 
-    const poster = await Poster.where({
+    // i.e, select * from products where id = ${product_id}
+    const posterToEdit = await Poster.where({
         'id': req.params.poster_id
     }).fetch({
-        'required': true
+        'required': true,
+        'withRelated':['tags']
     })
+
+    const posterJSON = posterToEdit.toJSON();
+    const existingTagsId = posterJSON.tags.map((tag)=>{tag.id})
+
 
     // process the form
     const posterForm = createPosterForm()
     posterForm.handle(req, {
         'success': async (form) => {
-            poster.set(form.data);
-            poster.save();
+            let {tags, ...posterData} = form.data;
+            posterToEdit.set(posterData);
+            posterToEdit.save()
+
+            //get the array of the new tag ids
+            let newTagsId = tags.split(',')
+
+            posterToEdit.tags().detach(existingTagsId);
+            posterToEdit.tags().attach(newTagsId);
+
+           
             req.flash('success_messages', `${form.data.title} is updated`)
             res.redirect('/posters/all-posters')
         },

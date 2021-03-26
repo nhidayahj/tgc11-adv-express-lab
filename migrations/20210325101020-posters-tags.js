@@ -16,31 +16,31 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db.createTable('posters_tags', {
-      'id':{type:'int', primaryKey:true, autoIncrement:true},
+      'id':{'type':'int', 'primaryKey':true, 'autoIncrement':true},
       'poster_id': {
-          type:'int',
-          notNull:true,
-          foreignKey:{
-              name:'posters_tags_poster_fk',
-              table:'posters',
-              rules:{
-                  onDelete:'cascade',
-                  onUpdate:'restrict'
+          'type':'int',
+          'notNull':true,
+          'foreignKey':{
+              'name':'posters_tags_poster_fk',
+              'table':'posters',
+              'rules':{
+                  'onDelete':'cascade',
+                  'onUpdate':'restrict'
               },
-              mapping:'id'
+              'mapping':'id'
           }
       }, 
       'tag_id':{
-          type:'int',
-          notNull:true, 
-          foreignKey:{
-              name:'posters_tags_tag_fk',
-              table:'tags',
-              rules: {
-                  onDelete:'cascade',
-                  onUpdate:'restrict'
+          'type':'int',
+          'notNull':true, 
+          'foreignKey':{
+              'name':'posters_tags_tag_fk',
+              'table':'tags',
+              'rules': {
+                  'onDelete':'cascade',
+                  'onUpdate':'restrict'
               },
-              mapping:'id'
+              'mapping':'id'
           }
       }
   });

@@ -19,7 +19,7 @@ const Category = bookshelf.model('Category', {
 })
 
 const Tag = bookshelf.model('Tag', {
-    tableName:'tags',
+    'tableName':'tags',
     posters(){
         return this.belongsToMany('Poster')
     }
