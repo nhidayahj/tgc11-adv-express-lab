@@ -44,13 +44,18 @@ router.post('/create', async (req, res) => {
     const allTags = await Tag.fetchAll().map((tag)=>{
         return [tag.get('id'), tag.get('name')]
     })
+
+    // inject in all the categories and tags
     const posterForm = createPosterForm(allCategories, allTags);
+
     posterForm.handle(req, {
         'success': async (form) => {
             let {tags, ...posterData} = form.data
             // below set the form fields from the desrtuctured object above
             const poster = new Poster();
             poster.set(posterData)
+            await poster.save();
+
             // below is if tags are selected
             if (tags) {
                 await poster.tags().attach(tags.split(','))
@@ -67,7 +72,7 @@ router.post('/create', async (req, res) => {
             // poster.set('tags', form.data.tags);
 
 
-            await poster.save();
+            
             req.flash('success_messages', `${form.data.title} has successfully been added!`)
             res.redirect('/posters/all-posters');
         },
@@ -134,7 +139,7 @@ router.post('/:poster_id/update', async (req, res) => {
     })
 
     const posterJSON = posterToEdit.toJSON();
-    const existingTagsId = posterJSON.tags.map((tag)=>{tag.id})
+    
 
 
     // process the form
@@ -147,6 +152,7 @@ router.post('/:poster_id/update', async (req, res) => {
 
             //get the array of the new tag ids
             let newTagsId = tags.split(',')
+            const existingTagsId = posterJSON.tags.map((tag)=>{tag.id})
 
             posterToEdit.tags().detach(existingTagsId);
             posterToEdit.tags().attach(newTagsId);
