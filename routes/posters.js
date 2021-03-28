@@ -71,9 +71,7 @@ router.post('/create', async (req, res) => {
             // poster.set('category_id', form.data.category_id);
             // poster.set('tags', form.data.tags);
 
-
-            
-            req.flash('success_messages', `${form.data.title} has successfully been added!`)
+            req.flash('success_messages', `${poster.get('title')} has successfully been added!`)
             res.redirect('/posters/all-posters');
         },
         'error': (form) => {
@@ -198,5 +196,6 @@ router.post('/:poster_id/delete', async (req, res) => {
     req.flash("success_messages", "Poster is successfully deleted")
     res.redirect('/posters/all-posters')
 })
+
 
 module.exports = router;

@@ -26,4 +26,8 @@ const Tag = bookshelf.model('Tag', {
 })
 
 
-module.exports = {Poster, Category, Tag};
+const User = bookshelf.model('User', {
+    'tableName':'users'
+})
+
+module.exports = {Poster, Category, Tag, User};

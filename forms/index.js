@@ -106,4 +106,39 @@ const createPosterForm = (categories, tags) => {
     })
 }
 
-module.exports = {createPosterForm, bootstrapField}
+const createRegisterForm = () => {
+    return forms.create({
+        'username': fields.string({
+            'required':true, 
+            'errorAfterField':true,
+            'cssClasses':{
+                 label: ['form-label', 'text-primary']
+            }
+        }),
+        'email': fields.string({
+            'required':true, 
+            'errorAfterField':true,
+            'cssClasses':{
+                 label: ['form-label', 'text-primary']
+            }
+        }),
+        // change the field type to be a 'password' field
+        'password': fields.password({
+            'required':true, 
+            'errorAfterField':true,
+            'cssClasses':{
+                 label: ['form-label', 'text-primary']
+            }
+        }),
+        'confirm_password': fields.password({
+            'required':true, 
+            'errorAfterField':true,
+            'cssClasses':{
+                 label: ['form-label', 'text-primary']
+            },
+            'validators':[validators.matchField('password')]
+        })
+    })
+}
+
+module.exports = {createPosterForm,createRegisterForm, bootstrapField}

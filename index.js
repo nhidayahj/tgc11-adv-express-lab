@@ -32,22 +32,29 @@ app.use(session({
     'saveUninitialized': true
 }))
 
+
+// set up flash 
+// enable after setting up session
 app.use(flash())
 //below sets up the middle ware
 app.use(function(req,res,next){
+    // res.locals contains variables that hbs file can access
     res.locals.success_messages = req.flash("success_messages");
     res.locals.error_messages = req.flash("error_messages");
-    next()
+    // remember to include next() or application will hang
+    next();
 })
 
 const landingRouter = require('./routes/landing')
 const productsRouter = require('./routes/products')
 const postersRouter = require('./routes/posters')
+const userRouter = require('./routes/users')
 
 async function main() {
   app.use('/', landingRouter)
   app.use('/products', productsRouter)
   app.use('/posters', postersRouter)
+  app.use('/user', userRouter)
 }
 
 main();
