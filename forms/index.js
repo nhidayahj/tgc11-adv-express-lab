@@ -120,7 +120,8 @@ const createRegisterForm = () => {
             'errorAfterField':true,
             'cssClasses':{
                  label: ['form-label', 'text-primary']
-            }
+            },
+            'validators':[validators.email()]
         }),
         // change the field type to be a 'password' field
         'password': fields.password({
@@ -130,6 +131,8 @@ const createRegisterForm = () => {
                  label: ['form-label', 'text-primary']
             }
         }),
+        // this additional column is to counter check is to store pwds and checked if
+        // it matches
         'confirm_password': fields.password({
             'required':true, 
             'errorAfterField':true,
@@ -141,4 +144,23 @@ const createRegisterForm = () => {
     })
 }
 
-module.exports = {createPosterForm,createRegisterForm, bootstrapField}
+
+const createLoginForm = () => {
+    return forms.create({
+        'email':fields.string({
+            'required':true, 
+            'errorAfterField':true, 
+            'cssClasses':{
+                label: ['form-label', 'text-primary']
+            }
+        }),
+        'password':fields.password({
+            'required':true, 
+            'errorAfterField':true, 
+            'cssClasses':{
+                label: ['form-label', 'text-primary']
+            }
+        })
+    })
+}
+module.exports = {createPosterForm,createRegisterForm, createLoginForm, bootstrapField}

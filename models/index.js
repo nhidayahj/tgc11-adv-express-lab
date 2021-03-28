@@ -30,4 +30,5 @@ const User = bookshelf.model('User', {
     'tableName':'users'
 })
 
+
 module.exports = {Poster, Category, Tag, User};
