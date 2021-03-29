@@ -74,12 +74,14 @@ const landingRouter = require('./routes/landing')
 const productsRouter = require('./routes/products')
 const postersRouter = require('./routes/posters')
 const userRouter = require('./routes/users')
+const cloudinaryRouter = require('./routes/cloudinary')
 
 async function main() {
   app.use('/', landingRouter)
   app.use('/products', productsRouter)
   app.use('/posters', postersRouter)
   app.use('/user', userRouter)
+  app.use('/cloudinary', cloudinaryRouter)
 }
 
 main();

@@ -33,8 +33,12 @@ router.get('/create', async (req, res) => {
     })
 
     const posterForm = createPosterForm(allCategories, allTags);
+    // send cloudinary params 
     res.render('posters/create', {
-        'form': posterForm.toHTML(bootstrapField)
+        'form': posterForm.toHTML(bootstrapField),
+        'cloudinaryName':process.env.CLOUDINARY_NAME,
+        'cloudinaryApiKey':process.env.CLOUDINARY_API_KEY,
+        'cloudinaryPreset':process.env.CLOUDINARY_UPLOAD_PRESET
     })
 })
 
@@ -101,8 +105,8 @@ router.get('/:poster_id/update', async (req, res) => {
     const posterToEdit = await Poster.where({
         'id': posterId
     }).fetch({
-        'required': true,
-        'withRelated':['tags']
+        'require': true,
+        'withRelated':['tags', 'category']
     })
 
     const posterJSON = posterToEdit.toJSON()
@@ -120,9 +124,16 @@ router.get('/:poster_id/update', async (req, res) => {
     posterForm.fields.category_id.value = posterToEdit.get('category_id')
     posterForm.fields.tags.value = selectedTags
 
+    // 1. set the image url in poster form
+    posterForm.fields.image_url.value=posterToEdit.get('image_url')
+
     res.render('posters/update', {
         'form': posterForm.toHTML(bootstrapField),
-        'poster': posterJSON
+        'poster': posterJSON,
+        // 2. send to hbs file all cloudinary information
+        'cloudinaryName': process.env.CLOUDINARY_NAME,
+        'cloudinaryApiKey': process.env.CLOUDINARY_API_KEY,
+        'cloudinaryPreset': process.env.CLOUDINARY_UPLOAD_PRESET,
     })
 })
 
@@ -133,7 +144,7 @@ router.post('/:poster_id/update', async (req, res) => {
     const posterToEdit = await Poster.where({
         'id': req.params.poster_id
     }).fetch({
-        'required': true,
+        'require': true,
         'withRelated':['tags']
     })
 
@@ -194,7 +205,7 @@ router.post('/:poster_id/delete', async (req, res) => {
     })
 
     await poster.destroy();
-    req.flash("success_messages", `Poster ${poster.get('title')} is successfully deleted`)
+    req.flash("success_messages", `Poster is successfully deleted`)
     res.redirect('/posters/all-posters')
 })
 
