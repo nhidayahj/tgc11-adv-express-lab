@@ -4,6 +4,7 @@
 <div>
     <h2>Create a Poster</h2>
     <form method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
         {{{form}}}
         <input type="submit" value="Add Poster" class="btn btn-primary" />
         <a href="/posters/all-posters" class="btn btn-danger">Cancel</a>

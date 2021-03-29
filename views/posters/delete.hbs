@@ -4,6 +4,7 @@
 <div>
     <h2>Delete Poster: {{poster.title}}</h2>
     <form method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
         <div class="alert alert-danger">
             <p>Are you sure you want to delete {{poster.title}}</p>
         </div> 

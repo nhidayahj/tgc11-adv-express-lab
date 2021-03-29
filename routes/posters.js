@@ -5,6 +5,7 @@ const { Poster, Category, Tag } = require('../models')
 
 // import the poster form 
 const { createPosterForm, bootstrapField } = require('../forms')
+const {checkIfAuthenticated} = require('../middleware')
 
 router.get('/all-posters', async (req, res) => {
     // the "withRelated" key specify the name of r/s on the model to load
@@ -193,7 +194,7 @@ router.post('/:poster_id/delete', async (req, res) => {
     })
 
     await poster.destroy();
-    req.flash("success_messages", "Poster is successfully deleted")
+    req.flash("success_messages", `Poster ${poster.get('title')} is successfully deleted`)
     res.redirect('/posters/all-posters')
 })
 
