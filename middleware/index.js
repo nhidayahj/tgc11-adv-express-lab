@@ -4,7 +4,7 @@ const checkIfAuthenticated = (req,res, next) => {
         // call next()
         next();
     } else {
-        req.flash('error_messages', 'You need ti sign in to access this page')
+        req.flash('error_messages', 'Please sign in or register to access this page')
         res.redirect('/user/login')
         // so if there's an error or a failure
         // don't call next()
