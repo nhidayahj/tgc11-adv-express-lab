@@ -149,7 +149,6 @@ const createRegisterForm = () => {
     })
 }
 
-
 const createLoginForm = () => {
     return forms.create({
         'email':fields.string({
@@ -169,4 +168,61 @@ const createLoginForm = () => {
         })
     })
 }
-module.exports = {createPosterForm,createRegisterForm, createLoginForm, bootstrapField}
+
+const createSearchForm = (categories, tags) => {
+    return forms.create({
+        'title': fields.string({
+            label:'Poster Title',
+            required: false,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label', 'text-primary']
+            },
+            
+        }),
+        'min_cost': fields.string({
+            label:'Poster min. cost',
+            required: false,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label','text-primary']
+                
+            },
+            validators:[validators.integer()]
+        }),
+        'max_cost': fields.string({
+            label:'Poster max. cost',
+            required: false,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label','text-primary']
+            },
+            validators:[validators.integer()]
+        }),
+        'category_id': fields.string({
+            label:'Poster Category',
+            required: false,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label','text-primary']
+            }, 
+            widget:widgets.select(),
+            choices:categories
+        }),
+        'tags': fields.string({
+            label:'Poster Tags',
+            required: false,
+            errorAfterField: true,
+            cssClasses: {
+                label: ['form-label','text-primary']
+            },
+            widget:widgets.multipleSelect(),
+            choices:tags
+        })
+    })
+}
+
+
+module.exports = {createPosterForm,
+                    createRegisterForm, createLoginForm, 
+                    createSearchForm, bootstrapField}

@@ -3,23 +3,102 @@ const router = express.Router();
 
 const { Poster, Category, Tag } = require('../models')
 
-// import the poster form 
-const { createPosterForm, bootstrapField } = require('../forms')
+// import the poster and search forms 
+const { createPosterForm, createSearchForm, bootstrapField } = require('../forms')
 const {checkIfAuthenticated} = require('../middleware')
 
 router.get('/all-posters', async (req, res) => {
     // the "withRelated" key specify the name of r/s on the model to load
     // name of the r/s is the function name that returns a r/s of model
     // look the model file
-    let posters = await Poster.collection().fetch({
-        'withRelated': ['category', 'tags']
-    });
+    // let posters = await Poster.collection().fetch({
+    //     'withRelated': ['category', 'tags']
+    // });
     
-    res.render('posters/posters', {
-        'posters': posters.toJSON(),
+    // res.render('posters/posters', {
+    //     'posters': posters.toJSON(),
 
-    })
+    // })
     // console.log(posters.toJSON())
+
+    // get all categories
+    const allCategories = await Category.fetchAll().map((category) => {
+        return [category.get('id'), category.get('name')]
+    })
+    // below is to manually add in a category '----' with index/value 0 
+    allCategories.unshift([0, '-----'])
+
+    // get all tags 
+    const allTags = await Tag.fetchAll().map((tag)=> {
+        return [tag.get('id'), tag.get('name')]
+    })
+
+    // create the search form
+    const searchForm = createSearchForm(allCategories, allTags);
+
+    // create a query builder aka base query 
+    // (i.e. SELECT * FROM posters)
+    let q = Poster.collection();
+
+    searchForm.handle(req, {
+        'empty':async(form) => {
+            // if form is empty, display all posters 
+            // fetch() executes the query
+            let posters = await q.fetch({
+                withRelated:['category', 'tags']
+            }); 
+
+            res.render('posters/posters', {
+                'posters':posters.toJSON(),
+                'form':form.toHTML(bootstrapField)
+            })
+        }, 
+        'error':async(form) => {
+            let posters = await q.fetch({
+                withRelated:['category', 'tags']
+            }); 
+            res.render('posters/posters', {
+                'form':form.toHTML(bootstrapField),
+                'posters':posters.toJSON()
+            })
+        }, 
+        'success':async(form) => {
+            if (form.data.title) {
+                // adding the WHERE clause to end of query 
+                // (ie. WHERE title LIKE '%title%')
+                 q = q.where('title', 'like', '%' + form.data.title +'%')
+            }
+
+            if (form.data.min_cost) {
+                q = q.where('cost', '>=', form.data.min_cost)
+            }
+
+            if (form.data.max_cost) {
+                q = q.where('cost', '<=', form.data.max_cost)
+            }
+
+            if (form.data.category_id !== '0') {
+                q = q.query('join', 'categories', 'category_id', 'categories.id')
+                    .where('categories.name', 'like', '%' + req.query.category_id + '%')
+            }
+
+            if (form.data.tags) {
+               q = q.query('join','posters_tags', 'posters.id', 'poster_id')
+                        .where('tag_id', 'in', form.data.tags.split(','))
+            }
+            
+            let posters = await q.fetch({
+                withRelated:['category', 'tags']
+            })
+
+
+            res.render('posters/posters', {
+                'form':form.toHTML(bootstrapField),
+                'posters':posters.toJSON()
+            })
+        }
+    })
+
 })
 
 
@@ -145,13 +224,11 @@ router.post('/:poster_id/update', async (req, res) => {
         'id': req.params.poster_id
     }).fetch({
         'require': true,
-        'withRelated':['tags']
+        'withRelated':['tags', 'category']
     })
 
     const posterJSON = posterToEdit.toJSON();
     
-
-
     // process the form
     const posterForm = createPosterForm()
     posterForm.handle(req, {
@@ -174,6 +251,7 @@ router.post('/:poster_id/update', async (req, res) => {
         'error': async (form) => {
             req.flash("error_messages", "There is an error to your updated field. Please check again.")
             res.render('posters/update', {
+                'poster':posterJSON,
                 'form': form.toHTML(bootstrapField)
             })
         }

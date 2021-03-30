@@ -1,9 +1,17 @@
 {{#extends 'base'}}
 
 {{#block 'content'}}
+<h2>Search Posters</h2>
+{{!-- processing form via GET does not need a CSRF token --}}
+<form method="GET">
+    {{{form}}}
+    <input type="submit" value="Search Poster" class="btn btn-primary btn-sm mb-5"/>
+</form>
+
+
+
 <h2>Our Posters List</h2>
-<input type="hidden" name="_csrf" value="{{csrfToken}}"/>
-<a href="/posters/create" class="btn btn-primary mb-3">Create a Poster</a>
+<a href="/posters/create" class="btn btn-primary mt-4 mb-3 btn-sm">Create a Poster</a>
 <table class="table">
     <thead>
         <tr>
