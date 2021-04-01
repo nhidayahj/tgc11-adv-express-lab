@@ -3,11 +3,11 @@
 {{#block 'content'}}
 <h2>Shopping Cart</h2>
 <div>
-    <input type="submit" value="Checkout" class="btn btn-success btn-sm mt-3 mb-4"/>
+    <a href="/checkout/checkout" class="btn btn-primary btn-sm mb-3 mt-3">Checkout</a>
 </div>
 
 <ul class="list-group">
-    {{#each allItems}}
+    {{#each this.allItems}}
     <li class='list-group-item'>
         <h4>{{this.poster.title}}</h4>
         <h5>{{this.poster.cost}}</h5>
@@ -18,7 +18,7 @@
             <input type="submit" class="btn btn-primary btn-sm ml-3" value="Update Quantity"/>
         </h5>
         </form>
-        
+        <a href="/shoppingCart/{{this.poster.id}}/remove" class="btn btn-danger btn-sm mt-3"></a>a>Remove</a>
     </li>
     {{/each}}
 

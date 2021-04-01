@@ -9,12 +9,17 @@ const CartServices = require('../services/CartServices')
 
 // get all the items by a certain user
 router.get('/', async(req,res) => {
+    console.log(req.session.user.id)
     let cartServices = new CartServices(req.session.user.id);
     const allItems = await cartServices.getAll();
+    // console.log(allItems)
+    // res.send("hello")
     res.render('shoppingCart/index', {
         'allItems':allItems.toJSON()
     })
 })
+
+
 
 // add items into shopping cart
 router.get('/:poster_id/add', async (req,res)=>{

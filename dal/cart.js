@@ -8,8 +8,9 @@ const getAllItems = async(userId) => {
         'user_id':userId
     }).fetch({
         require:false,
-        withRelated:['poster', 'poster.category']
+        withRelated:['posters']
     })
+    return allItems;
 }
 
 const getCartItemByUserAndPoster = async(userId, posterId) => {
@@ -18,7 +19,7 @@ const getCartItemByUserAndPoster = async(userId, posterId) => {
         'poster_id':posterId
     }).fetch({
         require:false,
-        withRelated:['poster', 'poster.category']
+        withRelated:['posters']
     })
     return cartItem;
 }
