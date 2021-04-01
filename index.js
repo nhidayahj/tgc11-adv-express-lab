@@ -5,12 +5,16 @@ require("dotenv").config();
 const session = require('express-session')
 const flash = require('connect-flash')
 const csurf = require('csurf')
+// cors is only for browser use
+const cors = require('cors')
 
 // create an instance of express app
 let app = express();
 
 // set the view engine
 app.set("view engine", "hbs");
+
+app.use(cors())
 
 // static folder
 app.use(express.static("public"));
@@ -75,6 +79,7 @@ const productsRouter = require('./routes/products')
 const postersRouter = require('./routes/posters')
 const userRouter = require('./routes/users')
 const cloudinaryRouter = require('./routes/cloudinary')
+const shoppingRouter = require('./routes/shoppingCart')
 
 async function main() {
   app.use('/', landingRouter)
@@ -82,6 +87,7 @@ async function main() {
   app.use('/posters', postersRouter)
   app.use('/user', userRouter)
   app.use('/cloudinary', cloudinaryRouter)
+  app.use('/shoppingCart', shoppingRouter)
 }
 
 main();

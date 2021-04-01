@@ -88,7 +88,7 @@ router.post('/login', async (req, res) => {
                         email: user.get('email')
                     }
                     req.flash('success_messages', `Welcome back, ${req.session.user.username}`);
-                    res.redirect('/user/profile');
+                    res.redirect('/posters/all-posters');
 
                 } else {
                     console.log("password not found")
