@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const bodyParser = require('body-parser')
 
 const CartServices = require('../services/CartServices')
 
@@ -66,7 +67,32 @@ router.get('/checkout', async (req, res) => {
         'publishableKey': process.env.STRIPE_PUBLISHABLE_KEY
     })
 
+})
 
+
+// at this route, Stripe is calling this Url, not us 
+router.post('/process_payment', bodyParser.raw({type:'application/json'}), async(req,res) => {
+    let payload = req.body;
+    // get a very long character
+    // console.log(payload)
+    let endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
+    let signHeader = req.headers['stripe-signature'];
+    let event; 
+    try {
+        event = stripe.webhooks.constructEvent(payload, signHeader, endpointSecret);
+    } catch (e) {
+        res.send({
+            'error':e.message
+        });
+        console.log(e.message)
+    }
+    // there is alot of events the Stripe webhook will trigger 
+    if (event.type == 'checkout.session.completed'){
+        // here you put in your transaction data (customizing UI) 
+        // when there is complete transaction
+        console.log("Stripe info: " ,event.data.object)
+    }
+    res.sendStatus(200)
 })
 
 
