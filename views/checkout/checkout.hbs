@@ -1,0 +1,8 @@
+{{!-- this is the boiletplate for all checkout in any eCommerce checkout  --}}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{publishableKey}}');
+    stripe.redirectToCheckout({
+        'sessionId':'{{sessionId}}'
+    })
+</script>

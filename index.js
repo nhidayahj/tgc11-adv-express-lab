@@ -86,6 +86,7 @@ const postersRouter = require('./routes/posters')
 const userRouter = require('./routes/users')
 const cloudinaryRouter = require('./routes/cloudinary')
 const shoppingRouter = require('./routes/shoppingCart')
+const checkoutRouter = require('./routes/checkout')
 
 async function main() {
   app.use('/', landingRouter)
@@ -94,6 +95,7 @@ async function main() {
   app.use('/user', userRouter)
   app.use('/cloudinary', cloudinaryRouter)
   app.use('/shoppingCart', shoppingRouter)
+  app.use('/checkout', checkoutRouter)
 }
 
 main();
