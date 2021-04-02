@@ -4,6 +4,7 @@ const {CartItem} = require('../models')
 
 
 const getAllItems = async(userId) => {
+    // if more than 1 results, use .collection()
     const allItems = await CartItem.collection().where({
         'user_id':userId
     }).fetch({
@@ -25,4 +26,13 @@ const getCartItemByUserAndPoster = async(userId, posterId) => {
     return cartItem;
 }
 
-module.exports = {getAllItems, getCartItemByUserAndPoster};
+const removeItem = async(userId, posterId) => {
+    const item = await getCartItemByUserAndPoster(userId, posterId);
+    if (item) {
+        item.destroy();
+        return true;
+    }
+    return false;
+}
+
+module.exports = {getAllItems, getCartItemByUserAndPoster, removeItem};

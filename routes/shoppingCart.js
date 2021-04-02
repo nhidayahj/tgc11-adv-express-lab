@@ -7,13 +7,12 @@ const CartServices = require('../services/CartServices')
 
 // create the route for shopping cart
 
-// get all the items by a certain user
+// show all the items by a certain user
 router.get('/', async(req,res) => {
-    console.log(req.session.user.id)
+    // console.log(req.session.user.id)
     let cartServices = new CartServices(req.session.user.id);
     const allItems = await cartServices.getAll();
-    // console.log(allItems)
-    // res.send("hello")
+    req.flash("Item has been added to your cart.")
     res.render('shoppingCart/index', {
         'allItems':allItems.toJSON()
     })
@@ -34,6 +33,14 @@ router.get('/:poster_id/add', async (req,res)=>{
 
 
 
+})
+
+
+router.get('/:poster_id/remove', async (req,res) => {
+    let cartServices = new CartServices(req.session.user.id);
+    await cartServices.removeCartItem(req.params.poster_id);
+    req.flash('success_messages', "Poster is removed from shopping cart");
+    res.redirect('back')
 })
 
 module.exports = router;

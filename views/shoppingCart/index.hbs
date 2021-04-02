@@ -8,17 +8,18 @@
 
 <ul class="list-group">
     {{#each this.allItems}}
-    <li class='list-group-item'>
-        <h4>{{this.poster.title}}</h4>
-        <h5>{{this.poster.cost}}</h5>
-        <form method="POST" action="/shoppingCart/{{this.poster.id}}/quantity/update">
+    <li class='list-group-item mt-3' style="postion:relative">
+        <h4>Poster Title: {{this.posters.title}}</h4>
+        <h5>Price: {{this.posters.cost}}</h5>
+        <form method="POST" action="/shoppingCart/{{this.posters.id}}/quantity/update">
         <input type="hidden" name="_csrf" value="{{../csrfToken}}"/>
         <h5>
             Quantity: <input type="text" style="width:50px" name="quantity" value="{{this.quantity}}">
             <input type="submit" class="btn btn-primary btn-sm ml-3" value="Update Quantity"/>
         </h5>
         </form>
-        <a href="/shoppingCart/{{this.poster.id}}/remove" class="btn btn-danger btn-sm mt-3"></a>a>Remove</a>
+        <img src={{this.posters.image_url}} style="width:98px;height:125px;position:absolute;right:15px;bottom:15px;" alt="img"/>
+        <a href="/shoppingCart/{{this.posters.id}}/remove" class="btn btn-danger btn-sm mt-3">Remove</a>
     </li>
     {{/each}}
 

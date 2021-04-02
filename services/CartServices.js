@@ -26,7 +26,7 @@ class CartServices {
         // i.e. we are getting a cart item belonging to a user 
         // and having a certain product id
         const cartItem = await cartDataLayer
-                        .getCartItemByUserAndPoster(this.user_id,posterId)
+            .getCartItemByUserAndPoster(this.user_id, posterId)
         //if the item does not exist, create 
         // and save it to cart
         if (!cartItem) {
@@ -44,8 +44,12 @@ class CartServices {
             await cartItem.save();
             return cartItem;
         }
-
     }
+
+    async removeCartItem(posterId) {
+        return await cartDataLayer.removeItem(this.user_id, posterId)
+    }
+
 }
 
 module.exports = CartServices;

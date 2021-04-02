@@ -14,14 +14,14 @@ const Poster = bookshelf.model('Posters', {
 const Category = bookshelf.model('Category', {
     'tableName':'categories',
     posters() {
-        return this.hasMany('Poster')
+        return this.hasMany('Posters')
     }
 })
 
 const Tag = bookshelf.model('Tag', {
     'tableName':'tags',
     posters(){
-        return this.belongsToMany('Poster')
+        return this.belongsToMany('Posters')
     }
 })
 
