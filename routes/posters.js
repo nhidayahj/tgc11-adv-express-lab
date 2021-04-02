@@ -2,12 +2,15 @@ const express = require('express')
 const router = express.Router();
 
 const { Poster, Category, Tag } = require('../models')
-// import in the DAL module
-const posterDataLayer = require('../dal/poster')
 
+// import in the DAL module
+// DAL is not covered in BRACES because we want ALL the functions 
+// in the dal/poster module
+const posterDataLayer = require('../dal/poster')
 
 // import the poster and search forms 
 const { createPosterForm, createSearchForm, bootstrapField } = require('../forms')
+
 // below middleware ensures that only certain pages are accessible if user is signed in 
 const {checkIfAuthenticated} = require('../middleware')
 
@@ -27,7 +30,7 @@ router.get('/all-posters', async (req, res) => {
     // console.log(posters.toJSON())
 
     // get all categories from DAL
-    const allCategories = await posterDataLayer.getAllCategories()
+    const allCategories = await posterDataLayer.getAllCategories();
     
     // below is to manually add in a category '----' with index/value 0 
     allCategories.unshift([0, '-----'])
@@ -170,6 +173,7 @@ router.get('/:poster_id/update', async (req, res) => {
      //fetch all tags
     const allTags = await posterDataLayer.getAllTags();
 
+    // fetch poster by their Id
     const posterToEdit = await posterDataLayer.getPosterById(posterId)
 
     const posterJSON = posterToEdit.toJSON()
@@ -204,12 +208,9 @@ router.get('/:poster_id/update', async (req, res) => {
 router.post('/:poster_id/update', async (req, res) => {
     // fetch the product we want to update 
     // i.e, select * from products where id = ${product_id}
-    const posterToEdit = await Poster.where({
-        'id': req.params.poster_id
-    }).fetch({
-        'require': true,
-        'withRelated':['tags', 'category']
-    })
+
+    const posterToEdit = await posterDataLayer.getPosterById(req.params.poster_id);
+    
 
     const posterJSON = posterToEdit.toJSON();
     
@@ -245,13 +246,8 @@ router.post('/:poster_id/update', async (req, res) => {
 
 router.get('/:poster_id/delete', async (req, res) => {
     // fetch the product we want to delete
-    let posterId = req.params.poster_id
-    const posterToDelete = await Poster.where({
-        'id': posterId
-    }).fetch({
-        'require': true
-    })
-
+    const posterToDelete = await posterDataLayer.getPosterById(req.params.poster_id)
+    
     res.render('posters/delete', {
         'poster': posterToDelete.toJSON()
     })
@@ -259,12 +255,8 @@ router.get('/:poster_id/delete', async (req, res) => {
 
 router.post('/:poster_id/delete', async (req, res) => {
     // fetch the product we want to delete
-    let posterId = req.params.poster_id;
-    let posterToDelete = await Poster.where({
-        'id': posterId
-    }).fetch({
-        'require': true
-    })
+    const posterToDelete = await posterDataLayer.getPosterById(req.params.poster_id)
+    
 
     await posterToDelete.destroy();
     req.flash("success_messages", `Poster is successfully deleted`)

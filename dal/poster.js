@@ -1,4 +1,6 @@
 // this is a DATA ACCESS LAYER (DAL) for posters domain
+// DAL is a module file name that accesses data from a DATABASE
+// compile functions that is related to extracting data from a DATABASE
 
 const { Poster, Category, Tag } = require('../models')
 
@@ -6,12 +8,13 @@ const { Poster, Category, Tag } = require('../models')
 
 // get poster by its id
 const getPosterById = async (posterId) => {
-    return await Poster.where({
+    const poster = await Poster.where({
         'id': posterId
     }).fetch({
         'require': true,
-        'withRelated':['tags', 'category']
+        'withRelated':['tags']
     });
+    return poster;
 }
 
 // get all categories
