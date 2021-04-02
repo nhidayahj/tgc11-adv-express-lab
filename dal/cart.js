@@ -14,6 +14,7 @@ const getAllItems = async(userId) => {
 }
 
 const getCartItemByUserAndPoster = async(userId, posterId) => {
+    // when getting only 1 item, no need include .collection()
     const cartItem = await CartItem.where({
         'user_id':userId,
         'poster_id':posterId

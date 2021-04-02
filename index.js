@@ -34,6 +34,8 @@ app.use(
 );
 
 // set up session 
+// ** IMPT: Remember to include "sessions/" in .gitignore file
+// as it contains the recorded session user
 app.use(session({
     'store': new FileStore(),
     'secret':process.env.SESSION_SECRET_KEY,
