@@ -46,6 +46,15 @@ class CartServices {
         }
     }
 
+    // update quantity 
+    async updateQuantity(posterId, newQuantity) {
+        return await cartDataLayer.updateQuantity(
+            this.user_id,
+            posterId,
+            newQuantity
+        )
+    }
+
     async removeCartItem(posterId) {
         return await cartDataLayer.removeItem(this.user_id, posterId)
     }

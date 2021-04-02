@@ -30,9 +30,6 @@ router.get('/:poster_id/add', async (req,res)=>{
     req.flash('success_messages', "Item successfully added into cart")
     // res.send('adding items into cart')
     res.redirect('back')
-
-
-
 })
 
 
@@ -40,6 +37,17 @@ router.get('/:poster_id/remove', async (req,res) => {
     let cartServices = new CartServices(req.session.user.id);
     await cartServices.removeCartItem(req.params.poster_id);
     req.flash('success_messages', "Poster is removed from shopping cart");
+    res.redirect('back')
+})
+
+// updating quantity in shopping cart 
+router.post('/:poster_id/quantity/update', async (req,res) => {
+    let cartServices = new CartServices(req.session.user.id);
+    // below line gets the posterId and retrieve the value of the quantity
+    // make sure in shoppingCart hbs, there is a 'name' attribute called quantity
+    // to retrieve the information
+    await cartServices.updateQuantity(req.params.poster_id, req.body.quantity);
+    req.flash("success_messages", "Quantity has been updated");
     res.redirect('back')
 })
 
