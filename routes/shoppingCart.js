@@ -25,6 +25,7 @@ router.get('/', async(req,res) => {
 router.get('/:poster_id/add', async (req,res)=>{
     // create an instance to save the user id first
     // to test the below line of code, user MUST be logged in to get the session id
+    // req.session.user is the data that we saved in the user.js file when user successfully logs in
     let cartServices = new CartServices(req.session.user.id) 
     await cartServices.addToCart(req.params.poster_id);
     req.flash('success_messages', "Item successfully added into cart")

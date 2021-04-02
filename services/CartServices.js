@@ -1,3 +1,4 @@
+// the services layer will handle the BUSINESS RULES 
 // this is the business logic that goes into Services folder
 // it contains the following funcitonalities:
 // 1. Add item to the cart 

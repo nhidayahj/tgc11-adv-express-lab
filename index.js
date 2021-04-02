@@ -3,6 +3,9 @@ const hbs = require("hbs");
 const wax = require("wax-on");
 require("dotenv").config();
 const session = require('express-session')
+// below dependency "FileStore" uses a file-based to store our sessions
+//(useful when testing logging in issues)
+const FileStore = require('session-file-store')(session)
 const flash = require('connect-flash')
 const csurf = require('csurf')
 // cors is only for browser use
@@ -32,6 +35,7 @@ app.use(
 
 // set up session 
 app.use(session({
+    'store': new FileStore(),
     'secret':process.env.SESSION_SECRET_KEY,
     'resave':false, // we will not resave the session
     'saveUninitialized': true
