@@ -60,8 +60,11 @@ app.use(function (req, res, next) {
 const csurfInstance = csurf();
 app.use(function (req, res, next) {
     // exclude /checkout/process_payment for CSRF
-    // console.log(req.url)
-    if (req.url === '/checkout/process_payment') {
+    // we also exclude if the route has '/api/' because 
+    // sending from/to API has no cookies or session involve
+    // hence no CSRF token
+    if (req.url === '/checkout/process_payment' || 
+        req.url.slice(0,5) == '/api/') {
         // go to the next middleware
         return next()
     } else {
@@ -101,6 +104,12 @@ const cloudinaryRouter = require('./routes/cloudinary')
 const shoppingRouter = require('./routes/shoppingCart')
 const checkoutRouter = require('./routes/checkout')
 
+// create an API object that contains all the routes 
+// relating to API routes
+const api = {
+    'posters':require('./routes/api/posters')
+}
+
 async function main() {
     app.use('/', landingRouter)
     app.use('/products', productsRouter)
@@ -109,6 +118,10 @@ async function main() {
     app.use('/cloudinary', cloudinaryRouter)
     app.use('/shoppingCart', shoppingRouter)
     app.use('/checkout', checkoutRouter)
+    // in API route, the 2nd argument has a .json() to make sure
+    // that data send from/to an API is in a json format.
+    // express.json() is a middleware func in Express 
+    app.use('/api/posters', express.json(), api.posters)
 }
 
 main();

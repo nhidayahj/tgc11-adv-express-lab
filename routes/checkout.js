@@ -71,7 +71,8 @@ router.get('/checkout', async (req, res) => {
 
 
 // at this route, Stripe is calling this Url, not us 
-router.post('/process_payment', bodyParser.raw({type:'application/json'}), async(req,res) => {
+router.post('/process_payment', bodyParser.raw({type:'application/json'}), 
+    async(req,res) => {
     let payload = req.body;
     // get a very long character
     // console.log(payload)

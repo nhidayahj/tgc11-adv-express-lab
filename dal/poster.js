@@ -6,6 +6,10 @@ const { Poster, Category, Tag } = require('../models')
 
 // must be in an async function 
 
+const getAllPosters = async() => {
+    return await Poster.fetchAll()
+}
+
 // get poster by its id
 const getPosterById = async (posterId) => {
     const poster = await Poster.where({
@@ -35,4 +39,4 @@ const getAllTags = async () => {
 
 
 
-module.exports = { getAllCategories, getAllTags, getPosterById }
+module.exports = { getAllCategories, getAllTags, getPosterById, getAllPosters}
