@@ -107,7 +107,8 @@ const checkoutRouter = require('./routes/checkout')
 // create an API object that contains all the routes 
 // relating to API routes
 const api = {
-    'posters':require('./routes/api/posters')
+    'posters':require('./routes/api/posters'),
+    'users':require('./routes/api/users')
 }
 
 async function main() {
@@ -122,6 +123,7 @@ async function main() {
     // that data send from/to an API is in a json format.
     // express.json() is a middleware func in Express 
     app.use('/api/posters', express.json(), api.posters)
+    app.use('/api/user', express.json(), api.users)
 }
 
 main();
